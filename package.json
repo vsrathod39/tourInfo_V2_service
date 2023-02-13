@@ -1,0 +1,23 @@
+{
+  "name": "tour_app_v2_service",
+  "version": "1.0.0",
+  "description": "tour_app_v2_serive",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "joi": "^17.7.1",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.9.1",
+    "uuid": "^9.0.0",
+    "winston": "^3.8.2"
+  }
+}
