@@ -1,11 +1,16 @@
 const bcrypt = require("bcrypt");
 const { User, validate } = require("../models/user.model");
+const { handleError } = require("../utils/error-handling");
+const logger = require("../utils/bunyanLogger");
 
 module.exports.getUser = async (req, res) => {
   try {
+    logger.info(`Started fetching user by user id: ${req.user._id}`);
     const user = await User.findById(req.user._id).select("-password");
+    logger.info(`Successfully fetched user by user`);
     res.send(user);
-  } catch (error) {
+  } catch (err) {
+    ogger.info(`Failed to fetch user. Error: ${err}`);
     throw new Error(`Failed to get users ${error}`)
   }
 };
@@ -30,12 +35,14 @@ module.exports.createUser = async (req, res) => {
     await user.save();
 
     const token = user.generateAuthToken();
-    return res.status(200).header("x-auth-token", token).send({
+    return res.status(201).header("x-auth-token", token).json({
       _id: user._id,
-      email: user.email
+      email: user.email,
+      userId: user.userId
     });
   } catch (error) {
-    console.log(`Failed to create a new user ${error}`);
-    return res.status(400).send({status: false, message: 'Failed to create user.'});
+    console.log(`Failed to create a new user`);
+    const errors = handleError(error);
+    return res.status(400).json(errors);
   }
 };

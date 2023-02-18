@@ -9,7 +9,7 @@ const secret_key = process.env.SECRET_KEY;
 const UserSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    required: true,
+    required: [true, 'Please provide valid firstName'],
     minlength: 2,
     maxlength: 50
   },
@@ -21,14 +21,14 @@ const UserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Please provide valid email'],
     minlength: 5,
     maxlength: 255,
     unique: true
   },
   password: {
     type: String,
-    required: true,
+    required: [true, 'Please provide valid password'],
     minlength: 3,
     maxlength: 255
   },
@@ -42,6 +42,16 @@ const UserSchema = new mongoose.Schema({
   isAdmin: Boolean
 });
 
+// Mongoose Hooks
+UserSchema.post('save', function (doc, next) {
+  console.log('User created successfully');
+  next();
+});
+
+UserSchema.pre('save', function (next) {
+  console.log('User about to be crated & saved');
+  next();
+});
 
 // custom method to generate authToken
 UserSchema.methods.generateAuthToken = function () {

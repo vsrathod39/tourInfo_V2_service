@@ -1,42 +1,27 @@
 const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config()
-
-// Routes
-const authRoutes = require('./src/routes/auth.route');
-const userRoutes = require('./src/routes/user.route');
+require('dotenv').config();
+const logger = require('./src/utils/bunyanLogger');
+const connectDatabase = require('./dbConnection/connection');
 
 const port = process.env.PORT || 4001;
 
+// Express app instance
 const app = express();
 
-app.use(express.json());
-// setting up public folder
-app.use(express.static('public'));
-// setting up view engine
-// app.use('view engine', 'ejs');
-
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/user', userRoutes);
+app.use('/api', require('./src/routes/index'));
 
+// middleware
+app.use(express.json());
+app.use(express.static('public'));  // setting up public folder
+// app.use('view engine', 'ejs'); // setting up view engine
 
-const connectDatabase = () => {
-  const dbUrl = `mongodb+srv://tourappmay2022:${process.env.MONGODB_PASSWORD}@cluster0.hwkx9.mongodb.net/${process.env.MOGNODB_DB}`;
-  const localHost = 'mongodb://localhost:27017/tourInfo_v2';
-  const env = process.env.ENV
+// db connection
+connectDatabase(app);
 
-  mongoose.set('strictQuery', false);
-  return mongoose.connect(env === 'DEV' ? localHost : dbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-};
-
-connectDatabase().then(() => {
+// listen app when mongoose connected successfully
+app.on('ready', function () {
   app.listen(port, () => {
-    console.log(`tourInfo service running successfully on port ${port}`);
-  })
-}).catch((err) => {
-  console.error(`tourInfo service did not started`, err);
-})
+    logger.info(`tourInfo service running successfully on port ${port}`);
+  });
+});

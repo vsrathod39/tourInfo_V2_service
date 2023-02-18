@@ -1,13 +1,19 @@
 const jwt = require("jsonwebtoken");
+const logger = require("../utils/bunyanLogger");
 
 const secret_key = process.env.SECRET_KEY;
 
 module.exports = function (req, res, next) {
+
+  logger.info(`User authentication started`);
   //get the token from the header if present
   let token = req.headers["x-access-token"] || req.headers["authorization"];
 
   //if no token found, return response (without going to the next middelware)
-  if (!token) return res.status(401).send("Access denied. No token provided.");
+  if (!token) {
+    logger.info(`User authentication failed, Access denied. No token provided`);
+    return res.status(401).send("Access denied, No token provided");
+  }
 
   try {
     token = token.split(' ')[1] // Remove Bearer from string
@@ -17,9 +23,10 @@ module.exports = function (req, res, next) {
     if (!verifiedUser) return res.status(401).send('Unauthorized request')
 
     req.user = verifiedUser; // user_id & user_type_id
+    logger.info(`User authentication successful. User id: ${verifiedUser._id}`);
     next();
-  } catch (error) {
-    console.log("Invalid Token:", error);
+  } catch (err) {
+    logger.info(`User authentication failed, Invalid Token. Error: ${err}`);
     res.status(400).send("Invalid Token");
   }
 };
