@@ -8,13 +8,13 @@ const port = process.env.PORT || 4001;
 // Express app instance
 const app = express();
 
-// Routes
-app.use('/api', require('./src/routes/index'));
-
 // middleware
 app.use(express.json());
 app.use(express.static('public'));  // setting up public folder
 // app.use('view engine', 'ejs'); // setting up view engine
+
+// Routes
+app.use('/api', require('./src/routes/index'));
 
 // db connection
 connectDatabase(app);

@@ -10,7 +10,7 @@ module.exports.getUser = async (req, res) => {
     logger.info(`Successfully fetched user by user`);
     res.send(user);
   } catch (err) {
-    ogger.info(`Failed to fetch user. Error: ${err}`);
+    logger.info(`Failed to fetch user. Error: ${err}`);
     throw new Error(`Failed to get users ${error}`)
   }
 };

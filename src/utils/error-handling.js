@@ -1,5 +1,5 @@
 module.exports.handleError = (err) => {
-  const errors = { firstName: '', lastName: '', password: '', email: ''};
+  const errors = { firstName: '', lastName: '', password: '', email: '' };
 
   // Checking duplicate error
   if (err.code === 11000) {

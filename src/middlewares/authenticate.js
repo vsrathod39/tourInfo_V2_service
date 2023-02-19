@@ -16,14 +16,14 @@ module.exports = function (req, res, next) {
   }
 
   try {
-    token = token.split(' ')[1] // Remove Bearer from string
+    token = token.split(' ')[1]; // Remove Bearer from string
     if (token === 'null' || !token) return res.status(401).send('Unauthorized request');
 
     let verifiedUser = jwt.verify(token, secret_key);   // config.TOKEN_SECRET => 'secretKey'
     if (!verifiedUser) return res.status(401).send('Unauthorized request')
 
     req.user = verifiedUser; // user_id & user_type_id
-    logger.info(`User authentication successful. User id: ${verifiedUser._id}`);
+    logger.info(`User authentication successful with userId #${verifiedUser._id}`);
     next();
   } catch (err) {
     logger.info(`User authentication failed, Invalid Token. Error: ${err}`);
